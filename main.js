@@ -1,12 +1,14 @@
 class NumberCircle extends HTMLElement {
+    static get observedAttributes() {
+        return ['number'];
+    }
+
     constructor() {
         super();
         const shadow = this.attachShadow({ mode: 'open' });
-        const number = this.getAttribute('number');
-
+        
         const circle = document.createElement('div');
         circle.setAttribute('class', 'number-circle');
-        circle.textContent = number;
 
         const style = document.createElement('style');
         style.textContent = `
@@ -39,6 +41,14 @@ class NumberCircle extends HTMLElement {
 
         shadow.appendChild(style);
         shadow.appendChild(circle);
+
+        this._circle = circle; // Store reference to the circle
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name === 'number' && this._circle) {
+            this._circle.textContent = newValue;
+        }
     }
 }
 
